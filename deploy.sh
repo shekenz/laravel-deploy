@@ -10,7 +10,7 @@ GRN='\033[0;32m'
 IMP='\033[0;1;46;30m'
 
 # Checking for parameter
-if [ -n "$1" -a "$1" != "auto" -a "$1" != "force" ]; then
+if [ -n "$1" -a "$1" != "auto" -a "$1" != "force" -a "$1" != "no"]; then
 	echo "${RED}Ambigous argument $1. Proceeding as normal mode."
 fi
 
@@ -52,7 +52,7 @@ fi
 echo ""
 
 echo "${IMP}[ COMPOSER ]${RST}"
-if [ "$1" = "auto" ]; then
+if [ "$1" = "auto" -o "$1" = "no" ]; then
 	echo "${YEL}Skipping PHP dependencies installation (Auto mode).${RST}"
 	echo ""
 elif [ "$1" = "force" ]; then
@@ -81,7 +81,7 @@ else
 fi
 
 echo "${IMP}[ NPM ]${RST}"
-if [ "$1" = "auto" ]; then
+if [ "$1" = "auto" -o "$1" = "no" ]; then
 	echo "${YEL}Skipping Node.js dependencies installation (Auto mode).${RST}"
 	echo ""
 elif [ "$1" = "force" ]; then
@@ -117,7 +117,7 @@ if [ "$1" = "auto" -o "$1" = "force" ]; then
 		echo "${RED}An error has occured."
 		exit 1
 	fi
-else
+elif [ "$1" != "no" ]; then
 	while true; do
 		read -p "Would you like to run production script ? [Y/n] " ans
 		case $ans in
@@ -132,15 +132,20 @@ else
 			* ) echo "Please answer ${GRN}Yes${RST} or ${RED}No${RST}."
 		esac
 	done
+else
+	echo "${YEL}Not running production script.${RST}";
 fi
 echo ""
 
 echo "${IMP}[ MIGRATION ]${RST}"
 if [ "$1" = "auto" -o "$1" = "force" ]; then
 	php artisan migrate --force
-else
+elif [ "$1" != "no" ]; then
 	php artisan migrate
+else
+	echo "${YEL}Not running migrations.${RST}";
 fi
+
 echo ""
 
 echo "${IMP}[ CACHE ]${RST}"
