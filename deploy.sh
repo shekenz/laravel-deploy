@@ -10,7 +10,7 @@ GRN='\033[0;32m'
 IMP='\033[0;1;46;30m'
 
 # Checking for parameter
-if [ -n "$1" -a "$1" != "auto" -a "$1" != "force" -a "$1" != "no"]; then
+if [ -n "$1" -a "$1" != "auto" -a "$1" != "force" -a "$1" != "no" ]; then
 	echo "${RED}Ambigous argument $1. Proceeding as normal mode."
 fi
 
