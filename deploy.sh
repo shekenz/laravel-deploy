@@ -37,10 +37,27 @@ echo "${IMP}[ MAINTENANCE MODE ]${RST}"
 php artisan down
 echo ""
 
+echo "${IMP}[ PERMISSIONS ]${RST}"
+sudo chown -R $USER:$USER ./
+if [ $? -gt 0 ]; then
+	echo "${RED}An error has occured.${RST}"
+	exit 1
+else
+	echo "${GRN}Permissions set to $USER.${RST}"
+fi
+echo ""
+
 echo "${IMP}[ GIT ]${RST}"
 if [ "$(ssh-add -l)" = "The agent has no identities." ]; then
 	ssh-add ~/.ssh/id_ed25519
 fi
+
+git reset --hard
+if [ $? -gt 0 ]; then
+	echo "${RED}An error has occured."
+	exit 1
+fi
+echo ""
 
 git pull
 if [ $? -gt 0 ]; then
@@ -158,6 +175,16 @@ echo ""
 
 echo "${IMP}[ ROUTES ]${RST}"
 php artisan route:cache
+echo ""
+
+echo "${IMP}[ PERMISSIONS ]${RST}"
+sudo chown -R www-data:www-data ./
+if [ $? -gt 0 ]; then
+	echo "${RED}An error has occured.${RST}"
+	exit 1
+else
+	echo "${GRN}Permissions restored!${RST}"
+fi
 echo ""
 
 echo "${IMP}[ MAINTENANCE MODE ]${RST}"
